@@ -14,64 +14,41 @@ class Task{
         task.userId = id;
       }else{
         task.userId = id;
-
       }
       tasks.save(task, ()=>{
         func(task);
       });
-    }
+    }// end static create
 
     static findByTaskId(id, func){
-
-      // if(id.length !== 24){func(null); return;}
-        if(typeof id === 'string'){
-          console.log(id);
+      if(typeof id === 'string'){
+      if(id.length !== 24){func(null); return;}
           id = Mongo.ObjectID(id);
         }
-        console.log(id);
       tasks.findOne({_id: id}, (error, result)=>{
         result = _.create(Task.prototype, result);
         func(result);
       });
     }// end findById
-}
-//   static register(obj, fn){
-//     users.findOne({email:obj.email}, (e,u)=>{
-//       if(u){
-//         fn(null);
-//       }else{
-//         var user = new User();
-//         user.email = obj.email;
-//         user.password = bcrypt.hashSync(obj.password, 8);
-//         users.save(user, ()=>fn(user));
-//       }
-//     });
-//   }
-//
-//   static login(obj, fn){
-//     users.findOne({email:obj.email}, (e,u)=>{
-//       if(u){
-//         var isMatch = bcrypt.compareSync(obj.password, u.password);
-//         if(isMatch){
-//           fn(u);
-//         }else{
-//           fn(null);
-//         }
-//       }else{
-//         fn(null);
-//       }
-//     });
-//   }
-//
-//   static findById(id, func){
-//     if(id.length !== 24){func(null); return;}
-//     id = Mongo.ObjectID(id);
-//     users.findOne({_id: id}, (error, result)=>{
-//       result = _.create(User.prototype, result);
-//       func(result);
-//     });
-//   }// end findById
-//
-// }
 
+    static findByUserId(id, func){
+      tasks.find({userId: id}).toArray((err, taskArray)=>{
+        func(taskArray);
+      });
+    }// end static findByUserId
+
+    complete(){
+      this.isComplete = true;
+    }
+
+    destroy(fn){
+      tasks.findAndRemove({_id: this._id}, ()=>{});
+    }// end destroy
+
+    save(func){
+      tasks.save(this, (err, count)=>{
+        func();
+      });
+    }
+}//end class Task
 module.exports = Task;
