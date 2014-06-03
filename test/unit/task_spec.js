@@ -58,7 +58,7 @@ describe('Task', function(){
       expect(testTask.isComplete).to.equal(true);
     });
   });
-//it worked! NICE JOB!!! are we starting back yer? I think we are getting ready to.ok, be there in a sec..sounds good
+
   describe('#save', function(){
     it('should save the Task', function(done){
       testTask.complete();
@@ -70,6 +70,7 @@ describe('Task', function(){
       });
     });
   });
+
 
   describe('.findByUserId', function(){
     it('should find all task by user Id', function(done){
