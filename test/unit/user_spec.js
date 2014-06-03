@@ -12,6 +12,7 @@ var request = require('supertest');
 var traceur = require('traceur');
 
 var User;
+var sue;
 
 describe('User', function(){
   before(function(done){
@@ -25,21 +26,16 @@ describe('User', function(){
 
   beforeEach(function(done){
     global.nss.db.collection('users').drop(function(){
-      done();
+      User.register({email:'sue@aol.com', password:'abcd'}, function(u){
+        sue = u;
+        done();
+      });
     });
   });
 
   describe('.register', function(){
-    beforeEach(function(done){
-      var obj = {email:'sue@aol.com', password:'1234'};
-      User.register(obj, function(){
-        done();
-      });
-    });
-
     it('should successfully register a user', function(done){
-      var obj = {email:'bob@aol.com', password:'1234'};
-      User.register(obj, function(u){
+      User.register({email:'bob@aol.com', password:'1234'}, function(u){
         expect(u).to.be.ok;
         expect(u).to.be.an.instanceof(User);
         expect(u._id).to.be.an.instanceof(Mongo.ObjectID);
@@ -49,12 +45,46 @@ describe('User', function(){
     });
 
     it('should NOT successfully register a user', function(done){
-      var obj = {email:'sue@aol.com', password:'1234'};
-      User.register(obj, function(u){
+      User.register({email:'sue@aol.com', password:'does not matter'}, function(u){
         expect(u).to.be.null;
         done();
       });
     });
+  });
+
+  describe('.login', function(){
+    it('should successfully login a user', function(done){
+      User.login({email:'sue@aol.com', password:'abcd'}, function(u){
+        expect(u).to.be.ok;
+        done();
+      });
+    });
+
+    it('should NOT login user - bad email', function(done){
+      User.login({email:'wrong@aol.com', password:'abcd'}, function(u){
+        expect(u).to.be.null;
+        done();
+      });
+    });
+
+    it('should NOT login user - bad password', function(done){
+      User.login({email:'sue@aol.com', password:'wrong'}, function(u){
+        expect(u).to.be.null;
+        done();
+      });
+    });
+
+    it('should return a user from a cookie Id', function(done){
+      User.findById(sue._id.toString(), function(u){
+        expect(u).to.be.ok;
+        expect(u).to.be.an.instanceof(User);
+        expect(u._id).to.be.an.instanceof(Mongo.ObjectID);
+        expect(u.password).to.have.length(60);
+        done();
+      });
+
+    });
+
   });
 
 });
