@@ -82,7 +82,13 @@ describe('User', function(){
         expect(u.password).to.have.length(60);
         done();
       });
+    });
 
+    it('should NOT return a user', function(done){
+      User.findById('123456789111', function(u){
+        expect(u).to.be.null;
+        done();
+      });
     });
 
   });

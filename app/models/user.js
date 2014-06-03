@@ -33,6 +33,7 @@ class User{
   }
 
   static findById(id, func){
+    if(id.length !== 24){func(null); return;}
     id = Mongo.ObjectID(id);
     users.findOne({_id: id}, (error, result)=>{
       result = _.create(User.prototype, result);
