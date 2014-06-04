@@ -6,7 +6,7 @@ class Task{
     static create(id, obj, func){
       var task = new Task();
       task.title = obj.title;
-      task.due = new Date(obj.due);
+      task.due = obj.date;
       task.color = obj.color;
       task.isComplete = false;
       if(typeof id === 'string'){

@@ -1,4 +1,14 @@
 extends ../shared/template
 
 block content
-  h1= title
+  h1 Register for Task Manager
+  form(action='/taskmanager/register', method='POST')
+    input.register(type='text', name='email', placeholder='Email')
+    input.register(type='password', name='password', placeholder='Password')
+    button#register Register
+
+  h1 Login to Task Manger
+  form(action='/taskmanager/login', method='POST')
+    input.register(type='text', name='email', placeholder='Email')
+    input.register(type='password', name='password', placeholder='Password')
+    button#register Register
